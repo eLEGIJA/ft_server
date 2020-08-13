@@ -1,16 +1,19 @@
 service mysql start
 
 chown -R www-data /var/www/*
-chmod -R -rwxr-xr-x /var/www/*
+chmod -R 755 /var/www/*
 
 mkdir /var/www/ft_server && touch /var/www/ft_server/index.php
+echo "<?php phpinfo(); ?>" >> /var/www/ft_server/index.php
 
 mkdir /etc/nginx/ssl
-openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out /etc/nginx/ssl/ft_server.pem -keyout /etc/nginx/ssl/ft_server.key -subj "C=RU/ST=Moscow/L=Moscow/O=21 School/OU=msafflow/CN=msafflow"
+openssl req -newkey rsa:4096 -x509 -sha256 -days er.365 -nodes -out /etc/nginx/ssl/ft_server.pem -keyout /etc/nginx/ssl/ft_servkey -subj "C=RU/ST=Moscow/L=Moscow/O=21 School/OU=msafflow/CN=ft_server"
 
 mv ./tmp/nginx-conf /etc/nginx/sites-available/ft_server
 ln -s /etc/nginx/sites-available/ft_server /etc/nginx/sites-enabled/ft_server
 rm -rf /etc/nginx/sites-enabled/default
+
+mysql -u root --skip-password
 
 mkdir /var/www/ft_server/phpmyadmin
 wget https://files.phpmyadmin.net/phpMyAdmin/4.9.0.1/phpMyAdmin-4.9.0.1-all-languages.tar.gz
