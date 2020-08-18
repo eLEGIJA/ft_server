@@ -5,22 +5,26 @@
 #                                                     +:+ +:+         +:+      #
 #    By: msafflow <elegija4mlg@gmail.com>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2020/08/13 14:00:16 by msafflow          #+#    #+#              #
-#    Updated: 2020/08/13 14:00:16 by msafflow         ###   ########.fr        #
+#    Created: 2020/08/17 17:23:59 by msafflow          #+#    #+#              #
+#    Updated: 2020/08/17 17:24:26 by msafflow         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 FROM debian:buster
 
-RUN apt-get update && apt-get install -y procps && apt-get install -y vim
-RUN apt-get -y install php7.3-fpm php7.3-common php7.3-mysql php7.3-gmp php7.3-curl php7.3-intl php7.3-mbstring php7.3-xmlrpc php7.3-gd php7.3-xml php7.3-cli php7.3-zip php7.3-soap php7.3-imap
-RUN apt-get -y install nginx
-RUN apt-get -y install wget
-RUN apt-get -y install mariadb-server
+EXPOSE 80 443
 
-COPY ./srcs/build.sh ./
-COPY ./srcs/nginx-conf ./tmp/nginx-conf
-COPY ./srcs/phpmyadmin.inc.php ./tmp/phpmyadmin.inc.php
-COPY ./srcs/wp-config.php ./tmp/wp-config.php
+RUN apt-get update && apt-get upgrade -y && \
+	apt-get install -y vim curl nginx mariadb-server php php-fpm php-mysql php-mbstring
 
-CMD bash build.sh
+RUN mkdir -p ../var/www/html/phpmyadmin && \
+	curl -O https://wordpress.org/latest.tar.gz && \
+	tar zxvf latest.tar.gz -C ../var/www/html && \
+	rm latest.tar.gz && \
+	curl -O https://files.phpmyadmin.net/phpMyAdmin/5.0.2/phpMyAdmin-5.0.2-all-languages.tar.gz && \
+	tar zxvf phpMyAdmin-5.0.2-all-languages.tar.gz -C ../var/www/html/phpmyadmin --strip-components 1 && \
+	rm phpMyAdmin-5.0.2-all-languages.tar.gz
+
+COPY srcs srcs
+
+CMD bash srcs/start.sh
