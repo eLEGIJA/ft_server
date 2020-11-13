@@ -14,7 +14,9 @@ echo "create database wordpress;
 	flush privileges;" | mysql
 
 mv srcs/nginx.conf /etc/nginx/sites-available/localhost
+
 ln -s /etc/nginx/sites-available/localhost /etc/nginx/sites-enabled/localhost
+
 rm -rf /etc/nginx/sites-enabled/default
 rm -rf /etc/nginx/sites-available/default
 
